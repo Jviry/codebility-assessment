@@ -1,8 +1,9 @@
 export class DomainError extends Error {
-  isDomainError: boolean = true;
+  public readonly statusCode: number;
 
-  constructor(message: string) {
+  constructor(statusCode: number, message: string) {
     super(message);
-    this.name = 'DomainError';
+    this.statusCode = statusCode;
+    Error.captureStackTrace(this, this.constructor);
   }
 }
