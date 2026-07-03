@@ -23,11 +23,27 @@ export class TodoUsecase {
   }
 
   updateTodo(id: string, data: UpdateTodoDTO): Todo {
-    if (data.title !== undefined && !data.title.trim()) {
-      throw new DomainError(400, 'Title cannot be empty');
+    if (!data || typeof data !== 'object') {
+      throw new DomainError(400, 'Invalid request body');
     }
 
-    const updated = this.repo.update(id, data);
+    const updateData: UpdateTodoDTO = {};
+
+    if (data.title !== undefined) {
+      if (typeof data.title !== 'string' || !data.title.trim()) {
+        throw new DomainError(400, 'Title must be a non-empty string');
+      }
+      updateData.title = data.title.trim();
+    }
+
+    if (data.completed !== undefined) {
+      if (typeof data.completed !== 'boolean') {
+        throw new DomainError(400, 'Completed must be a boolean');
+      }
+      updateData.completed = data.completed;
+    }
+
+    const updated = this.repo.update(id, updateData);
     if (!updated) throw new DomainError(404, 'Todo not found');
     return updated;
   }
