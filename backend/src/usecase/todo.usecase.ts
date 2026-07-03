@@ -16,7 +16,7 @@ export class TodoUsecase {
   }
 
   createTodo(data: CreateTodoDTO): Todo {
-    if (!data.title || !data.title.trim()) {
+    if (!data || typeof data.title !== 'string' || !data.title.trim()) {
       throw new DomainError(400, 'Title is required');
     }
     return this.repo.create({ title: data.title.trim() });
